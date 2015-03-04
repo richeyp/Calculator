@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Rate Increase Calculator" height="250" scaling="false" />
+	<UserPref name="usage" display_name="Number of KWH Usage" required="true" />
+	<UserPref name="mvl" display_name="Number of MVL Lights" required="true" />
+	<UserPref name="hps" display_name="Number of HPS Lights" required="true" />
+<Content type="html">
+	<script type="text/javascript">
+		var prefs=new gadgets.Prefs();
+  		var usage=prefs.getInt("usage");
+		var mvl=prefs.getInt("mvl");
+		var hps=prefs.getInt("hps");
+		var oldKWH="0.00";
+		var newKWH="0.00";
+		var oldSL="0.00";
+		var newSL="0.00";
+		var oldTotal="0.00";
+		var newTotal="0.00";
+		var dollar="0.00";
+		var percent="0.00";
+		var oldCustomerCharge="9.75";
+		var newCustomerCharge="12.00";
+		var oldUpcharge="5.25";
+		var newUpcharge="7.50";
+		var oldKWHCharge="0.085";
+		var newKWHCharge="0.088";
+		var oldGrossTax="0.02";
+		var newGrossTax="0.02";
+		var MVLKWH="70";
+		var oldMVLCharge="7.85";
+		var newMVLCharge="7.85";
+		var HPSKWH="40";
+		var oldHPSCharge="7.75";
+		var newHPSCharge="7.75";
+		var oldPCA="0.00215";
+		var newPCA="0.00215";
+
+		function calculate() {
+			oldKWH=((usage*oldKWHCharge)-(usage*oldPCA);
+			newKWH=((usage*newKWHCharge)-(usage*newPCA);
+			oldSL=(mvl*oldMVLCharge)-(mvl*MVLKWH*oldPCA)+(hps*oldHPSCharge)-(hps*HPSKWH*oldPCA);
+			newSL=(mvl*newMVLCharge)-(mvl*MVLKWH*newPCA)+(hps*newHPSCharge)-(hps*HPSKWH*newPCA);
+			if(oldKWH >= (oldCustomerCharge+oldUpcharge)) {
+				oldTotal=((oldKWH+oldSL)+((oldKWH+oldSL)*oldGrossTax));
+			} else {
+				oldTotal=((oldCustomerCharge+oldUpcharge)*(1.00+oldGrossTax))+oldSL;
+			}
+
+			if(newKWH >= (newCustomerCharge+newUpcharge)) {
+				newTotal=((newKWH+newSL)+((newKWH+newSL)*newGrossTax));
+			} else {
+				newTotal=((newCustomerCharge+newUpcharge)*(1.00+newGrossTax))+newSL;
+			}
+
+			dollar=newTotal-oldTotal;
+			percent=dollar/oldTotal;
+		}
+
+		gadgets.util.registerOnLoadHandler(calculate);	
+	</script>
+	<!-- <button type="button" onclick="calculate()">Calculate</button>	-->
+</Content>
+</Module>
