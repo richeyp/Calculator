@@ -1,63 +1,129 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Module>
-  <ModulePrefs title="Rate Increase Calculator" height="250" scaling="false" />
-	<UserPref name="usage" display_name="Number of KWH Usage" required="true" />
-	<UserPref name="mvl" display_name="Number of MVL Lights" required="true" />
-	<UserPref name="hps" display_name="Number of HPS Lights" required="true" />
-<Content type="html">
-	<script type="text/javascript">
-		var prefs=new gadgets.Prefs();
-  		var usage=prefs.getInt("usage");
-		var mvl=prefs.getInt("mvl");
-		var hps=prefs.getInt("hps");
-		var oldKWH="0.00";
-		var newKWH="0.00";
-		var oldSL="0.00";
-		var newSL="0.00";
-		var oldTotal="0.00";
-		var newTotal="0.00";
-		var dollar="0.00";
-		var percent="0.00";
-		var oldCustomerCharge="9.75";
-		var newCustomerCharge="12.00";
-		var oldUpcharge="5.25";
-		var newUpcharge="7.50";
-		var oldKWHCharge="0.085";
-		var newKWHCharge="0.088";
-		var oldGrossTax="0.02";
-		var newGrossTax="0.02";
-		var MVLKWH="70";
-		var oldMVLCharge="7.85";
-		var newMVLCharge="7.85";
-		var HPSKWH="40";
-		var oldHPSCharge="7.75";
-		var newHPSCharge="7.75";
-		var oldPCA="0.00215";
-		var newPCA="0.00215";
+<div id="content_div">
+  Monthly KWH: <input type="text" value="0" id="kwh1">
+  <br>
+  Number of MVL Lights: <input type="text" value="0" id="mvl1">
+  <br>
+  Number of HPS Lights: <input type="text" value="0" id="hps1">
+  <br>
+  <button type="button" id="calculate1" onclick="calculate(document.getElementById('kwh1').value,document.getElementById('mvl1').value,document.getElementById('hps1').value);">Calculate</button>
+  <br>
+  <b>Bill with Old Rate</b>
+  <br>
+  KWH Charge: <input type="text" id="oldKwh" readonly>
+  SL Charge: <input type="text" id="oldSL" readonly>
+  Total Charge: <input type="text" id="oldTotal" readonly>
+  <br>
+  <b>Bill with New Rate</b>
+  <br>
+  KWH Charge: <input type="text" id="newKwh" readonly>
+  SL Charge: <input type="text" id="newSL" readonly>
+  Total Charge: <input type="text" id="newTotal" readonly>
+  <br>
+  <b>Change:</b>
+  <br>
+  Dollar Change: <input type="text" id="dollar1" readonly>
+  Percent Change: <input type="text" id="percent1" readonly>
+</div>
+<script type="text/javascript">
+                var oldKWH="0.00";
+                var newKWH="0.00";
+                var oldSL="0.00";
+                var newSL="0.00";
+                var oldTotal="0.00";
+                var newTotal="0.00";
+                var dollar="0.00";
+                var percent="0.00";
+                var oldCustomerCharge=9.75;
+                var newCustomerCharge=12.00;
+                var oldUpcharge=5.25;
+                var newUpcharge=7.50;
+                var oldKWHCharge="0.085";
+                var newKWHCharge="0.088";
+                var oldGrossTax="0.02";
+                var newGrossTax="0.02";
+      var oldGross1="1.02";
+      var newGross1="1.02";
+                var MVLKWH="70";
+                var oldMVLCharge="7.85";
+                var newMVLCharge="7.85";
+                var HPSKWH="40";
+                var oldHPSCharge="7.75";
+                var newHPSCharge="7.75";
+                var oldPCA="0.01101";
+                var newPCA="0.00248";
+  
+function isInt(n)
+{
+  if(parseFloat(n) == parseInt(n) && !isNaN(n))
+  {
+      return true;
+  }
+  else
+  { 
+    return false;
+  }
+}
 
-		function calculate() {
-			oldKWH=((usage*oldKWHCharge)-(usage*oldPCA);
-			newKWH=((usage*newKWHCharge)-(usage*newPCA);
-			oldSL=(mvl*oldMVLCharge)-(mvl*MVLKWH*oldPCA)+(hps*oldHPSCharge)-(hps*HPSKWH*oldPCA);
-			newSL=(mvl*newMVLCharge)-(mvl*MVLKWH*newPCA)+(hps*newHPSCharge)-(hps*HPSKWH*newPCA);
-			if(oldKWH >= (oldCustomerCharge+oldUpcharge)) {
-				oldTotal=((oldKWH+oldSL)+((oldKWH+oldSL)*oldGrossTax));
-			} else {
-				oldTotal=((oldCustomerCharge+oldUpcharge)*(1.00+oldGrossTax))+oldSL;
-			}
+  function calculate(usage, mvl, hps) {
+    if(usage == null || usage == "" || usage < 0 || !isInt(usage)){
+      document.getElementById("kwh1").value = "False";
+      return false;
+    }
+    if(mvl == null || mvl == "" || mvl < 0 || !isInt(mvl)){
+       document.getElementById("mvl1").value = "False";
+       return false;
+    }
+    if(hps == null || hps == "" || hps < 0 || !isInt(hps)){
+       document.getElementById("hps1").value = "False";
+       return false;
+    }
+                  
+    oldKWH=((usage*oldKWHCharge+oldCustomerCharge)-(usage*oldPCA));
+    newKWH=((usage*newKWHCharge+newCustomerCharge)-(usage*newPCA));
+    oldSL=(mvl*oldMVLCharge)-(mvl*MVLKWH*oldPCA)+(hps*oldHPSCharge)-(hps*HPSKWH*oldPCA);
+    newSL=(mvl*newMVLCharge)-(mvl*MVLKWH*newPCA)+(hps*newHPSCharge)-(hps*HPSKWH*newPCA);
+    
+    if(oldKWH >= (oldCustomerCharge+oldUpcharge)) {
+       oldTotal=((oldKWH+oldSL)+((oldKWH+oldSL)*oldGrossTax));
+    } 
+    else {
+       oldTotal=((oldCustomerCharge+oldUpcharge)*(oldGross1))+oldSL;
+    }
 
-			if(newKWH >= (newCustomerCharge+newUpcharge)) {
-				newTotal=((newKWH+newSL)+((newKWH+newSL)*newGrossTax));
-			} else {
-				newTotal=((newCustomerCharge+newUpcharge)*(1.00+newGrossTax))+newSL;
-			}
+    if(newKWH >= (newCustomerCharge+newUpcharge)) {
+       newTotal=((newKWH+newSL)+((newKWH+newSL)*newGrossTax));
+    } 
+    else {
+       newTotal=((newCustomerCharge+newUpcharge)*(newGross1))+newSL;
+    }
 
-			dollar=newTotal-oldTotal;
-			percent=dollar/oldTotal;
-		}
-
-		gadgets.util.registerOnLoadHandler(calculate);	
-	</script>
-	<!-- <button type="button" onclick="calculate()">Calculate</button>	-->
-</Content>
-</Module>
+       dollar=newTotal-oldTotal;
+       percent=dollar/oldTotal*100;
+                    
+                  oldKWH = oldKWH + (1/10000000);  
+                  oldKWH = oldKWH.toFixed(2);
+                  newKWH = newKWH + (1/10000000);
+                   newKWH = newKWH.toFixed(2);
+                  oldSL = oldSL + (1/10000000);
+                   oldSL = oldSL.toFixed(2);
+                  newSL = newSL + (1/10000000);
+                   newSL = newSL.toFixed(2);
+                  oldTotal = oldTotal + (1/10000000);
+                   oldTotal = oldTotal.toFixed(2);
+                  newTotal = newTotal + (1/10000000);
+                   newTotal = newTotal.toFixed(2);
+                  dollar = dollar + (1/10000000);
+                   dollar = dollar.toFixed(2);
+                  percent = percent + (1/10000000);
+                   percent = percent.toFixed(2);
+                  
+                  document.getElementById("oldKwh").value = "$ " + oldKWH;
+                  document.getElementById("newKwh").value = "$ " + newKWH;
+                  document.getElementById("oldSL").value = "$ " + oldSL;
+                  document.getElementById("newSL").value = "$ " + newSL;
+                  document.getElementById("oldTotal").value = "$ " + oldTotal;
+                  document.getElementById("newTotal").value = "$ " + newTotal;
+                  document.getElementById("dollar1").value = "$ " + dollar;
+                  document.getElementById("percent1").value = percent + " %";
+}
+</script>
